@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Layout } from '../components'
-import { classnames, config } from '../utils'
+import { classnames, config, menu } from '../utils'
 import { Helmet } from 'react-helmet'
 import '../themes/index.less'
+const { prefix } = config
 
 const { Header, Bread, Footer, Sider, styles } = Layout
 
@@ -11,6 +13,7 @@ const App = ({ children, location, dispatch, app }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
 
   const headerProps = {
+    menu,
     user,
     siderFold,
     location,
@@ -32,6 +35,7 @@ const App = ({ children, location, dispatch, app }) => {
   }
 
   const siderProps = {
+    menu,
     siderFold,
     darkTheme,
     location,
@@ -40,9 +44,13 @@ const App = ({ children, location, dispatch, app }) => {
       dispatch({ type: 'app/changeTheme' })
     },
     changeOpenKeys (openKeys) {
-      localStorage.setItem('navOpenKeys', JSON.stringify(openKeys))
+      localStorage.setItem(`${prefix}navOpenKeys`, JSON.stringify(openKeys))
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
     },
+  }
+
+  const breadProps = {
+    menu,
   }
 
   if (config.openPages && config.openPages.indexOf(location.pathname) > -1) {
@@ -63,7 +71,7 @@ const App = ({ children, location, dispatch, app }) => {
         </aside> : ''}
         <div className={styles.main}>
           <Header {...headerProps} />
-          <Bread location={location} />
+          <Bread {...breadProps} location={location} />
           <div className={styles.container}>
             <div className={styles.content}>
               {children}
@@ -83,4 +91,4 @@ App.propTypes = {
   app: PropTypes.object,
 }
 
-export default connect(({ app }) => ({ app }))(App)
+export default connect(({ app, loading }) => ({ app, loading }))(App)

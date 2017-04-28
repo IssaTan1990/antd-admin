@@ -13,7 +13,7 @@ export default {
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
-    navOpenKeys: [],
+    navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
   },
   subscriptions: {
     setup ({ dispatch }) {
@@ -133,7 +133,6 @@ export default {
       }
     },
     handleNavOpenKeys (state, { payload: navOpenKeys }) {
-      console.log(navOpenKeys)
       return {
         ...state,
         ...navOpenKeys,
